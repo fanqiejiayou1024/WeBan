@@ -1,12 +1,6 @@
 # _WeBan_ 安全微课 安全微伴 大学安全教育
 
-## 介绍
-
-如果本项目帮到了你，可以在右上角点亮 Star，谢谢你！
-
-实现了课程学习和根据题库自动考试，支持多用户多线程运行，自动验证码识别等。
-
-运行前后会自动合并题库，如果一次没满分可以再考一次。可将 `answer/answer.json` 文件提交 PR 一起完善题库。
+#此仓库为基于我个人使用的简单修改，如有需要请看上游仓库，谢谢
 
 ## 功能特性
 
@@ -23,41 +17,33 @@
 
 ## 使用
 
-> **零基础三步上手**：① 下载二进制文件 → ② 双击/命令行运行 → ③ 输入学校、学号、密码。不需要安装 Python，不需要写代码。
+### 源码运行
 
-### ⭐ 快速开始（推荐：下载即用）
+不需要代码基础的用户**跳过本节**（直接下载二进制即可）。开发者/想改代码时用：
 
-**第 1 步：下载你的系统对应的文件**
+1. 安装 Python 3（建议使用 [uv](https://github.com/astral-sh/uv)）和 Git
 
-点这里打开最新版下载页 → [**Releases**](https://github.com/hangone/WeBan/releases/latest)，按自己的电脑系统下载（不确定系统就按下面的表选）：
+2. 克隆本仓库
 
-| 你的电脑                             | 点击下载（GitHub）                                                                                       | 下载太慢用镜像                                                                                               |
-| ------------------------------------ | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| Windows（绝大多数电脑）              | [WeBan-windows-x64.exe](https://github.com/hangone/WeBan/releases/latest/download/WeBan-windows-x64.exe) | [镜像](https://gh-proxy.com/https://github.com/hangone/WeBan/releases/latest/download/WeBan-windows-x64.exe) |
-| Mac 苹果电脑（Intel 芯片）           | [WeBan-macos-x64](https://github.com/hangone/WeBan/releases/latest/download/WeBan-macos-x64)             | [镜像](https://gh-proxy.com/https://github.com/hangone/WeBan/releases/latest/download/WeBan-macos-x64)       |
-| Mac 苹果电脑（M1/M2/M3/M4 芯片）     | [WeBan-macos-arm64](https://github.com/hangone/WeBan/releases/latest/download/WeBan-macos-arm64)         | [镜像](https://gh-proxy.com/https://github.com/hangone/WeBan/releases/latest/download/WeBan-macos-arm64)     |
-| Linux（Ubuntu/Debian/CentOS，64 位） | [WeBan-linux-x64](https://github.com/hangone/WeBan/releases/latest/download/WeBan-linux-x64)             | [镜像](https://gh-proxy.com/https://github.com/hangone/WeBan/releases/latest/download/WeBan-linux-x64)       |
-| Linux（树莓派/ARM 服务器）           | [WeBan-linux-arm64](https://github.com/hangone/WeBan/releases/latest/download/WeBan-linux-arm64)         | [镜像](https://gh-proxy.com/https://github.com/hangone/WeBan/releases/latest/download/WeBan-linux-arm64)     |
+```bash
+git clone --depth 1 https://github.com/hangone/WeBan
+```
 
-> **Mac 怎么判断芯片**：屏幕左上角 → 关于本机，看"芯片"一栏写的是 Apple M 系列（arm64）还是 Intel（x64）。Windows 不确定就选 x64（2010 年后几乎都是）。
+3. 安装依赖
 
-**第 2 步：运行**
+```bash
+pip install -r requirements.txt # 或 uv sync
+```
 
-- **Windows**：双击 `WeBan-windows-x64.exe`（第一次运行如被 SmartScreen 拦截，点"更多信息" → "仍要运行"；杀毒软件误报请添加信任）
-- **Mac**：在文件目录打开终端运行：
-  ```bash
-  chmod +x WeBan-macos-*
-  xattr -cr WeBan-macos-*
-  ./WeBan-macos-arm64   # Intel 芯片换成 WeBan-macos-x64
-  # 然后可能会卡一会，是苹果在验证签名，等就行
-  ```
-- **Linux**：
-  ```bash
-  chmod +x WeBan-linux-*
-  ./WeBan-linux-x64     # ARM 服务器换成 WeBan-linux-arm64
-  ```
+4. 运行
 
-**第 3 步：填账号，开始**
+```bash
+python main.py # 或 uv run main.py
+```
+
+运行 `python main.py --help` 可查看全部参数。
+
+**填账号，开始**
 
 第一次运行（或还没有配置文件时），程序会**直接让你输入学校、用户名、密码**（不用编辑任何文件）：
 
@@ -69,20 +55,6 @@
 ```
 
 输入后程序会**自动验证账号**：登录成功就会把账号自动保存到配置文件 `config.toml`，然后开始学习和考试；**如果学校全称或用户名密码错了，会提示你重新输入，不会写坏配置文件**。之后每次运行都会接着上次的进度继续。
-
-> 配置文件 `config.toml` 在程序旁边（Windows 是 exe 所在文件夹，Mac/Linux 是运行命令的目录），下次运行前也可以手动改它。用 `--data-dir` 可以指定固定位置（见下方参数表）。
-
-**不想交互输入？一条命令直接跑**（学校/学号/密码写在命令里，无需配置文件）：
-
-```bash
-# Windows (PowerShell)
-$env:WB_TENANT_NAME="你的学校全称"; $env:WB_USERNAME="你的学号"; $env:WB_PASSWORD="你的密码"; .\WeBan-windows-x64.exe
-
-# mac / Linux
-WB_TENANT_NAME="你的学校全称" WB_USERNAME=你的学号 WB_PASSWORD=你的密码 ./WeBan-macos-arm64
-```
-
-> 全部参数对照表见下方"参数总览"；账号想保密的、或一个文件管理多个账号的，用配置文件方式。
 
 ### 参数总览
 
@@ -128,71 +100,6 @@ WB_TENANT_NAME="你的学校全称" WB_USERNAME=你的学号 WB_PASSWORD=你的�
 WB_STUDY_TIME="20,5" WB_VIDEO_SPEED=0 ./WeBan-macos-arm64
 # 或等价的命令行参数
 ./WeBan-macos-arm64 --tenant-name "你的学校全称" --username 你的学号 \
-  --study-time "20,5" --video-speed 0
-```
-
-### 源码运行
-
-不需要代码基础的用户**跳过本节**（直接下载二进制即可）。开发者/想改代码时用：
-
-1. 安装 Python 3（建议使用 [uv](https://github.com/astral-sh/uv)）和 Git
-
-2. 克隆本仓库
-
-```bash
-git clone --depth 1 https://github.com/hangone/WeBan
-```
-
-3. 安装依赖
-
-```bash
-pip install -r requirements.txt # 或 uv sync
-```
-
-4. 运行
-
-```bash
-python main.py # 或 uv run main.py
-```
-
-运行 `python main.py --help` 可查看全部参数。
-
-### Docker
-
-提供两种镜像变体（多架构 amd64/arm64，发布时随版本推送）：
-
-| 镜像       | Tag                                            | 说明                           |
-| ---------- | ---------------------------------------------- | ------------------------------ |
-| 内置浏览器 | `latest` / `with-browser` / `<版本号>`         | 内置 headless Chrome，开箱即用 |
-| 轻量镜像   | `without-browser` / `<版本号>-without-browser` | 通过 CDP 连接宿主机浏览器      |
-
-容器默认无交互运行（`ENVIRONMENT=docker` 自动判定），数据全部持久化在 `/app/data`：
-
-```bash
-mkdir -p data
-docker run --rm \
-  -v "$PWD/data":/app/data \
-  --cpus 1 \
-  hangyi/weban:latest
-```
-
-- 建议 `--cpus 1`（详见下方"CPU 配额与验证码"）；首次运行会在 `./data/` 生成 `config.toml` 模板，填写账号后重新运行即可
-- 日志在 `./data/logs/<账号>/`，题库在 `./data/answer/`，全部挂载持久化
-- 无交互：不弹编辑器、确认用默认值、验证码自动识别失败不等待手动输入（跳过该课）、末尾不等待回车
-- 需要交互（如手动输验证码）时用 `docker run -it`（容器检测到 TTY 自动进入交互模式）
-
-所有配置项均可覆盖（命令行参数 > 环境变量 > 配置文件，名称一一对应，见上方参数表）。示例：
-
-```bash
-# 环境变量（单账号免配置文件）
-docker run --rm -v "$PWD/data":/app/data --cpus 1 \
-  -e WB_TENANT_NAME="你的学校全称" -e WB_USERNAME=你的学号 -e WB_PASSWORD=你的密码 \
-  -e WB_STUDY_TIME="20,5" -e WB_VIDEO_SPEED=0 \
-  hangyi/weban:latest
-
-# 命令行参数（经 entrypoint 透传）
-docker run --rm -v "$PWD/data":/app/data --cpus 1 \
-  hangyi/weban:latest --tenant-name "你的学校全称" --username 你的学号 \
   --study-time "20,5" --video-speed 0
 ```
 
@@ -277,16 +184,10 @@ docker run --rm \
 
 ## 鸣谢
 
-- [Coaixy/weiban-tool](https://github.com/Coaixy/weiban-tool) 提供题库和一些代码思路
-- [pooneyy/WeibanQuestionsBank](https://github.com/pooneyy/WeibanQuestionsBank) 提供题库
+- [Coaixy/weiban-tool]([[https://github.com/Coaixy/weiban-tool](https://github.com/hangone/WeBan](https://github.com/hangone/WeBan))) 提供开源源码
 
 ## 其他
 
 1. 本项目仅供学习交流使用，请勿用于商业用途。
 2. 欢迎 Star 喵，欢迎 PR 喵。
-3. 截图时注意打码个人信息。
-4. **如果看不懂上面说的也可以直接扫码备注微信号(不要wxid_开头的，搜不到)，乐意效劳。**
 
-   |             微信             |
-   | :--------------------------: |
-   | ![wechat](images/wechat.png) |
