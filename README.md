@@ -1,6 +1,6 @@
 # _WeBan_ 安全微课 安全微伴 大学安全教育
 
-#此仓库为基于我个人使用的简单修改，如有需要请看上游仓库，谢谢
+# 此仓库为基于我个人使用的简单修改，如有需要请看上游仓库，谢谢
 
 ## 功能特性
 
@@ -12,30 +12,24 @@
 - **断点续考**：追求满分模式下，一次未满分可再次考试
 - **进度监控**：完课后自动检查进度是否更新，未更新则警告提示
 - **调试模式**：开启 `debug` 可查看完整请求/响应日志
-- **无交互运行**：Docker / cron / 后台环境自动无交互，数据目录持久化
-- **低配兼容**：numpy 1.26 + OpenCV 4.10 锁定，兼容无 AVX2 的 QEMU 虚拟 CPU（便宜 1H1G 云服务器可跑）
 
 ## 使用
 
 ### 源码运行
 
-不需要代码基础的用户**跳过本节**（直接下载二进制即可）。开发者/想改代码时用：
-
-1. 安装 Python 3（建议使用 [uv](https://github.com/astral-sh/uv)）和 Git
-
-2. 克隆本仓库
+克隆仓库
 
 ```bash
 git clone --depth 1 https://github.com/hangone/WeBan
 ```
 
-3. 安装依赖
+安装依赖
 
 ```bash
 pip install -r requirements.txt # 或 uv sync
 ```
 
-4. 运行
+ 运行
 
 ```bash
 python main.py # 或 uv run main.py
@@ -53,6 +47,13 @@ python main.py # 或 uv run main.py
   用户名（学号/考生号之类的）: <你的账号>
   密码（默认同用户名）: <你的密码>
 ```
+
+- ### Token 登录方法
+
+有些从迎新系统跳转的可以试试账号密码都是学号，也可以尝试使用 Token 登录，在电脑浏览器登录后按 F12 或者 Ctrl+Shift+I 打开开发者工具，找到本地存储，复制 user 的内容到 config.toml 配置文件
+
+![chrome](images/chrome.png)
+![firefox](images/firefox.png)
 
 输入后程序会**自动验证账号**：登录成功就会把账号自动保存到配置文件 `config.toml`，然后开始学习和考试；**如果学校全称或用户名密码错了，会提示你重新输入，不会写坏配置文件**。之后每次运行都会接着上次的进度继续。
 
@@ -103,46 +104,6 @@ WB_STUDY_TIME="20,5" WB_VIDEO_SPEED=0 ./WeBan-macos-arm64
   --study-time "20,5" --video-speed 0
 ```
 
-#### CPU 配额与验证码
-
-- **docker 下多核正常**：实测（docker 29.x，2 核 1.9GB）`--cpus 1` / `--cpus 2` × 单进程/多进程全部跑通，真实课程点选验证码在 `--cpus 2` 下完整通过（识别 → 点击 → 提交 → 腾讯 SDK 回调成功），无挂起
-- 建议 `--cpus 1`：镜像默认单进程 + 单线程识别（`WB_SINGLE_PROCESS` / `WB_CV_THREADS`），1 核即可跑通全部验证码；多核配额没有性能收益（Chrome 单进程受单核限制），1.9GB 小内存机器用 2 核反而容易内存吃紧
-- **podman 已知特例**：podman（如 `podman run --cpus 2`）下 headless-shell 点选验证码**提交后可能挂起**（CDP evaluate 无响应 60s+，1 核正常）——这是 podman 的 CPU 配额调度问题，非程序缺陷；podman 部署请用 `--cpus 1`
-
-#### 轻量镜像（CDP 连接宿主机浏览器）
-
-容器会自动检测 Docker 环境并尝试连接宿主机的 Chrome，无需手动配置 CDP。
-
-**第一步：在宿主机启动 Chrome 远程调试**
-
-打开 Chrome，地址栏输入 `chrome://inspect/#remote-debugging`，勾选 **Allow remote debugging for this browser instance**。
-
-或者直接命令行启动带远程调试的 Chrome：
-
-```bash
-# macOS
-"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --remote-debugging-port=9222
-
-# Linux
-google-chrome --remote-debugging-port=9222
-
-# Windows
-"C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
-```
-
-> 参考：[Chrome DevTools: Debug your browser session](https://developer.chrome.com/blog/chrome-devtools-mcp-debug-your-browser-session)
-
-**第二步：运行容器**
-
-```bash
-mkdir -p data
-docker run --rm \
-  -v "$PWD/data":/app/data \
-  hangyi/weban:without-browser
-```
-
-如需自定义 CDP 地址，可用 `--cdp-host` / `--cdp-port` 参数或配置文件 `cdp_host` / `cdp_port`。
-
 ### 浏览器检测
 
 程序按以下优先级自动检测可用的浏览器，无需手动配置：
@@ -164,12 +125,7 @@ docker run --rm \
 
 关闭代理软件的系统代理再试，或把 `127.0.0.1`、`localhost` 加入代理软件的 bypass 列表。
 
-- ### 部分无法直接登录的学校/Token 登录方法
 
-有些从迎新系统跳转的可以试试账号密码都是学号，也可以尝试使用 Token 登录，在电脑浏览器登录后按 F12 或者 Ctrl+Shift+I 打开开发者工具，找到本地存储，复制 user 的内容到 config.json 配置文件
-
-![chrome](images/chrome.png)
-![firefox](images/firefox.png)
 
 - ### 学习
 
@@ -184,10 +140,8 @@ docker run --rm \
 
 ## 鸣谢
 
-- [Coaixy/weiban-tool]([[https://github.com/Coaixy/weiban-tool](https://github.com/hangone/WeBan](https://github.com/hangone/WeBan))) 提供开源源码
+- [https://github.com/Coaixy/weiban-tool](https://github.com/hangone/WeBan](https://github.com/hangone/WeBan)) 提供开源源码
 
 ## 其他
 
-1. 本项目仅供学习交流使用，请勿用于商业用途。
-2. 欢迎 Star 喵，欢迎 PR 喵。
-
+本项目仅供学习交流使用，请勿用于商业用途。
