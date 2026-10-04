@@ -52,8 +52,8 @@ python main.py # 或 uv run main.py
 
 有些从迎新系统跳转的可以试试账号密码都是学号，也可以尝试使用 Token 登录，在电脑浏览器登录后按 F12 或者 Ctrl+Shift+I 打开开发者工具，找到本地存储，复制 user 的内容到 config.toml 配置文件
 
-![chrome](images/chrome.png)
-![firefox](images/firefox.png)
+[//]: ![chrome](images/chrome.png)
+![edge](images/edge.png)
 
 输入后程序会**自动验证账号**：登录成功就会把账号自动保存到配置文件 `config.toml`，然后开始学习和考试；**如果学校全称或用户名密码错了，会提示你重新输入，不会写坏配置文件**。之后每次运行都会接着上次的进度继续。
 
