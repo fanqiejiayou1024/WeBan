@@ -8,8 +8,8 @@ with open("config.toml", "rb") as f:
 # 2. 拿数据
 ai_config = config.get("ai", {})
 api_key = ai_config.get("api_key", "")
-base_url = ai_config.get("base_url", "https://api.siliconflow.cn/v1")
-model_name = ai_config.get("model", "XingChenAGI/Xing4.0-29B")
+base_url = ai_config.get("base_url", "")
+model_name = ai_config.get("model", "")
 
 if not api_key or api_key == "sk-API":
     print("❌ 错误: config.toml 中的 api_key 还没填真实的 Key！")
