@@ -1,4 +1,4 @@
-import tomllib  # Python 3.11+ 自带，不用 pip 安装！
+import tomllib
 from openai import OpenAI
 
 # 1. 读取 config.toml（注意这里是用 "rb" 二进制模式读取）
